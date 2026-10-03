@@ -12,7 +12,7 @@ internal sealed class EndpointMetadata
 
     public required string Tag { get; set; }
 
-    public int? RateLimit { get; set; }
+    public uint? RateLimit { get; set; }
 
     public required bool IsDeprecated { get; set; }
 

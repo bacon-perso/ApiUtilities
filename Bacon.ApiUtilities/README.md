@@ -328,7 +328,7 @@ Each documented operation carries two vendor extensions. The Swagger UI script r
   <data name="429000" xml:space="preserve"><value>You may only perform this action every {0} milliseconds.</value></data>
   ```
 
-- **Configuration**: set `MilliSeconds` to the delay between two calls. `0`, or leaving it unset (the default), means the endpoint is **not rate limited**: no limiter is created and no error is raised. A negative value is a mistake: the setter throws, so the application fails at startup (an `ArgumentOutOfRangeException` wrapped in a `CustomAttributeFormatException`, raised while the controller endpoints are built).
+- **Configuration**: set `MilliSeconds` to the delay between two calls. `0`, or leaving it unset (the default), means the endpoint is **not rate limited**: no limiter is created and no error is raised. The property is an unsigned integer (`uint`), so a negative value does not compile.
 - **Timing**: the limit is a token bucket of one token that refills every `MilliSeconds`. The refill is timer based, so for very small values the delay between two accepted calls is approximate.
 - **Behind a reverse proxy**: configure `UseForwardedHeaders()` before the rate limiter. Otherwise all anonymous callers share the proxy's IP address, and therefore one limit.
 - **Custom rate limiting**: the library sets `RateLimiterOptions.GlobalLimiter` and `RateLimiterOptions.OnRejected`. If your application configures its own, check that they do not overwrite each other.

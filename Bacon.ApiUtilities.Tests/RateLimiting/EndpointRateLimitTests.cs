@@ -216,13 +216,6 @@ internal sealed class EndpointRateLimitTests
 
     #region Attribute
 
-    [TestCase(-1)]
-    [TestCase(int.MinValue)]
-    public void EndpointRateLimitAttribute_WithNegativeMilliSeconds_ShouldThrow(int milliSeconds)
-    {
-        Assert.Throws<ArgumentOutOfRangeException>(() => _ = new EndpointRateLimitAttribute { MilliSeconds = milliSeconds });
-    }
-
     [Test]
     public void EndpointRateLimitAttribute_WithZeroMilliSeconds_ShouldBeAcceptedAsNoLimit()
     {

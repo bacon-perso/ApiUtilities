@@ -9,13 +9,5 @@ public sealed class EndpointRateLimitAttribute : Attribute
     /// <summary>
     /// Sets the amount of time between each request in milliseconds
     /// </summary>
-    public int MilliSeconds 
-    { 
-        get; 
-        set
-        {
-            ArgumentOutOfRangeException.ThrowIfNegative(value);
-            field = value;
-        }
-    }
+    public uint MilliSeconds  { get; set; }
 }
