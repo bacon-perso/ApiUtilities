@@ -20,7 +20,7 @@ public static class DateExtensions
                 return true;
             }
 
-            return (value >= (dateFrom == null ? DateTime.MinValue : dateFrom.Value) && value <= (dateTo == null ? DateTime.MaxValue : dateTo.Value));
+            return (value >= (dateFrom ?? DateTime.MinValue) && value <= (dateTo ?? DateTime.MaxValue));
         }
     }
 }
