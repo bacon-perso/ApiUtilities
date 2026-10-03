@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="Bacon.ApiUtilities.Samples/Bacon.ApiUtilities.Samples.csproj" />
+  <Project Path="Bacon.ApiUtilities.Tests/Bacon.ApiUtilities.Tests.csproj" />
+  <Project Path="Bacon.ApiUtilities/Bacon.ApiUtilities.csproj" />
+  <Project Path="Bacon.Utilities.Tests/Bacon.Utilities.Tests.csproj" Id="c66d44d7-d654-4d47-b055-5ffba054563b" />
+  <Project Path="Bacon.Utilities/Bacon.Utilities.csproj" Id="f8d69ae4-630f-416b-96a7-9123ef34593c" />
+</Solution>

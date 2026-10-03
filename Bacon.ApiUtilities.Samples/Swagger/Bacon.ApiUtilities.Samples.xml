@@ -1,0 +1,326 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bacon.ApiUtilities.Samples</name>
+    </assembly>
+    <members>
+        <member name="T:Bacon.ApiUtilities.Samples.Attributes.Authorization.BaseCustomAuthorizationAttribute">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bacon.ApiUtilities.Samples.Attributes.Authorization.BaseCustomAuthorizationAttribute.Privileges">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.Attributes.Authorization.BaseCustomAuthorizationAttribute.#ctor(Bacon.ApiUtilities.Samples.Models.Privileges[])">
+            <summary>
+            CTOR
+            </summary>
+            <param name="privileges"></param>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.Attributes.Authorization.BaseCustomAuthorizationAttribute.OnAuthorizationAsync(Microsoft.AspNetCore.Mvc.Filters.AuthorizationFilterContext)">
+            <summary>
+            
+            </summary>
+            <param name="authorizationFilterContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.Attributes.Authorization.BaseCustomAuthorizationAttribute.IsValidGrantType(System.String,System.String)">
+            <summary>
+            Check if the token is the proper grant type
+            </summary>
+            <param name="subject"></param>
+            <param name="tokenType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.Attributes.Authorization.BaseCustomAuthorizationAttribute.ValidatePrivileges(System.Collections.Generic.IEnumerable{Bacon.ApiUtilities.Samples.Models.Privileges},System.Collections.Generic.IList{Bacon.ApiUtilities.Samples.Models.Privileges})">
+            <summary>
+            Validates the privileges
+            </summary>
+            <param name="privileges"></param>
+            <param name="endpointPrivileges"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.Attributes.Authorization.BaseCustomAuthorizationAttribute.AuthenticateSchemeAsync(Microsoft.AspNetCore.Mvc.Filters.AuthorizationFilterContext)">
+            <summary>
+            Return user claims.
+            </summary>
+            <param name="authorizationFilterContext">Authorization filter authorizationFilterContext</param>
+            <returns>List of Claims</returns>
+        </member>
+        <member name="T:Bacon.ApiUtilities.Samples.Attributes.Validations.AllowedCaptionAttribute">
+            <summary>
+            
+            </summary>
+            <param name="maxCaptionTextLength"></param>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.Attributes.Validations.AllowedCaptionAttribute.#ctor(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="maxCaptionTextLength"></param>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.Attributes.Validations.AllowedCaptionAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <param name="validationContext"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Bacon.ApiUtilities.Samples.Attributes.Validations.AnotherValidationAttribute">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.Attributes.Validations.AnotherValidationAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <param name="validationContext"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Bacon.ApiUtilities.Samples.Controllers.AnotherController">
+            <summary>
+            Weather Controller
+            </summary>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.Controllers.AnotherController.GetAnotherByCityAsync(System.String,System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            Get weather
+            </summary>
+            <remarks>
+            Get weather by city
+            </remarks>
+            <param name="city">The city</param>
+            <param name="totos">An optional list of totos</param>
+        </member>
+        <member name="T:Bacon.ApiUtilities.Samples.Controllers.WeatherForecastController">
+            <summary>
+            Weather Controller
+            </summary>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.Controllers.WeatherForecastController.GetWeatherByCityAsync(System.String,System.Collections.Generic.IEnumerable{System.Int32},System.Nullable{Bacon.ApiUtilities.Samples.Models.Privileges})">
+            <summary>
+            Get weather
+            </summary>
+            <remarks>
+            Get weather by city
+            </remarks>
+            <param name="city">The city</param>
+            <param name="totos">A required list of totos</param>
+            <param name="privilege">An optional privilege</param>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.Controllers.WeatherForecastController.GetWeatherListAsync">
+            <summary>
+            Get weather list
+            </summary>
+            <remarks>
+            Get a list of weather
+            </remarks>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.Controllers.WeatherForecastController.CreateWeatherByCity(System.String,System.Collections.Generic.IEnumerable{Bacon.ApiUtilities.Samples.DTOs.CaptionSet})">
+            <summary>
+            Create weather
+            </summary>
+            <remarks>
+            Create weather by city
+            </remarks>
+            <param name="city">The city</param>
+            <param name="captionSets">An optional list of captionsy</param>
+        </member>
+        <member name="T:Bacon.ApiUtilities.Samples.DTOs.CaptionSet">
+            <summary>
+            Caption DTO
+            </summary>
+        </member>
+        <member name="P:Bacon.ApiUtilities.Samples.DTOs.CaptionSet.LanguageCode">
+            <summary>
+            Defines the language code, IE : en-US.
+            </summary>
+        </member>
+        <member name="P:Bacon.ApiUtilities.Samples.DTOs.CaptionSet.Text">
+            <summary>
+            The text
+            </summary>
+        </member>
+        <member name="T:Bacon.ApiUtilities.Samples.DTOs.TotoSet">
+            <summary>
+            Toto Set
+            </summary>
+        </member>
+        <member name="P:Bacon.ApiUtilities.Samples.DTOs.TotoSet.Name">
+            <summary>
+            The name
+            </summary>
+        </member>
+        <member name="P:Bacon.ApiUtilities.Samples.DTOs.TotoSet.Captions">
+            <summary>
+            The captions
+            </summary>
+        </member>
+        <member name="T:Bacon.ApiUtilities.Samples.Models.AnotherWeatherForecast">
+            <summary>
+            A weather forecast
+            </summary>
+        </member>
+        <member name="P:Bacon.ApiUtilities.Samples.Models.AnotherWeatherForecast.Date">
+            <summary>
+            A date
+            </summary>
+        </member>
+        <member name="P:Bacon.ApiUtilities.Samples.Models.AnotherWeatherForecast.TemperatureC">
+            <summary>
+            Temperature in Celcius
+            </summary>
+        </member>
+        <member name="P:Bacon.ApiUtilities.Samples.Models.AnotherWeatherForecast.TemperatureF">
+            <summary>
+            Temperature in Fahrenheit
+            </summary>
+        </member>
+        <member name="P:Bacon.ApiUtilities.Samples.Models.AnotherWeatherForecast.Summary">
+            <summary>
+            The summary
+            </summary>
+        </member>
+        <member name="T:Bacon.ApiUtilities.Samples.Models.Privileges">
+            <summary>
+            Privileges
+            </summary>
+        </member>
+        <member name="F:Bacon.ApiUtilities.Samples.Models.Privileges.GetWeather">
+            <summary>
+            Get weather
+            </summary>
+        </member>
+        <member name="F:Bacon.ApiUtilities.Samples.Models.Privileges.PostWeather">
+            <summary>
+            Post weather
+            </summary>
+        </member>
+        <member name="T:Bacon.ApiUtilities.Samples.Models.WeatherForecast">
+            <summary>
+            A weather forecast
+            </summary>
+        </member>
+        <member name="P:Bacon.ApiUtilities.Samples.Models.WeatherForecast.Date">
+            <summary>
+            A date
+            </summary>
+        </member>
+        <member name="P:Bacon.ApiUtilities.Samples.Models.WeatherForecast.TemperatureC">
+            <summary>
+            Temperature in Celcius
+            </summary>
+        </member>
+        <member name="P:Bacon.ApiUtilities.Samples.Models.WeatherForecast.TemperatureF">
+            <summary>
+            Temperature in Fahrenheit
+            </summary>
+        </member>
+        <member name="P:Bacon.ApiUtilities.Samples.Models.WeatherForecast.Summary">
+            <summary>
+            The summary
+            </summary>
+        </member>
+        <member name="T:Bacon.ApiUtilities.Samples.ProjectConfigs.ApiExceptionHandlerSettings">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.ProjectConfigs.ApiExceptionHandlerSettings.GetBuiltInValidationAttributeSettings">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.ProjectConfigs.ApiExceptionHandlerSettings.GetCustomValidationattributeSettings">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Bacon.ApiUtilities.Samples.ProjectConfigs.ApiVersioningErrorResponseProvider">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.ProjectConfigs.ApiVersioningErrorResponseProvider.#ctor(Microsoft.Extensions.Options.IOptions{Microsoft.AspNetCore.Http.Json.JsonOptions})">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.ProjectConfigs.ApiVersioningErrorResponseProvider.CanWrite(Microsoft.AspNetCore.Http.ProblemDetailsContext)">
+            <summary>
+            
+            </summary>
+            <param name="problemDetailsContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bacon.ApiUtilities.Samples.ProjectConfigs.ApiVersioningErrorResponseProvider.WriteAsync(Microsoft.AspNetCore.Http.ProblemDetailsContext)">
+            <summary>
+            
+            </summary>
+            <param name="problemDetailsContext"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Bacon.ApiUtilities.Samples.Resources.ErrorCodeResources">
+            <summary>
+            Scafolded class used for leading resources
+            </summary>
+        </member>
+        <member name="T:Program">
+            <summary>
+            Auto-generated public partial Program class for top-level statement apps.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type)">
+            <summary>
+            Generates a documentation comment ID for a type.
+            Example: T:Namespace.Outer+Inner`1 becomes T:Namespace.Outer.Inner`1
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Reflection.PropertyInfo)">
+            <summary>
+            Generates a documentation comment ID for a property.
+            Example: P:Namespace.ContainingType.PropertyName or for an indexer P:Namespace.ContainingType.Item(System.Int32)
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type,System.String)">
+            <summary>
+            Generates a documentation comment ID for a property given its container type and property name.
+            Example: P:Namespace.ContainingType.PropertyName
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Reflection.MethodInfo)">
+            <summary>
+            Generates a documentation comment ID for a method (or constructor).
+            For example:
+              M:Namespace.ContainingType.MethodName(ParamType1,ParamType2)~ReturnType
+              M:Namespace.ContainingType.#ctor(ParamType)
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.GetTypeDocId(System.Type,System.Boolean,System.Boolean)">
+            <summary>
+            Generates a documentation ID string for a type.
+            This method handles nested types (replacing '+' with '.'),
+            generic types, arrays, pointers, by-ref types, and generic parameters.
+            The <paramref name="includeGenericArguments"/> flag controls whether
+            constructed generic type arguments are emitted, while <paramref name="omitGenericArity"/>
+            controls whether the generic arity marker (e.g. "`1") is appended.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.NormalizeDocId(System.String)">
+            <summary>
+            Normalizes a documentation comment ID to match the compiler-style format.
+            Strips the return type suffix for ordinary methods but retains it for conversion operators.
+            </summary>
+            <param name="docId">The documentation comment ID to normalize.</param>
+            <returns>The normalized documentation comment ID.</returns>
+        </member>
+    </members>
+</doc>

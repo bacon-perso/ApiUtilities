@@ -1,0 +1,6 @@
+@Bacon.ApiUtilities.Samples_HostAddress = http://localhost:5109
+
+GET {{Bacon.ApiUtilities.Samples_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
