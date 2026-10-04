@@ -154,8 +154,8 @@ try
                     Version = "1",
                     License = new()
                     {
-                        Name = "MIT",
-                        Url = new Uri("https://opensource.org/licenses/MIT")
+                        Name = "Apache 2.0",
+                        Url = new Uri("https://opensource.org/license/apache-2.0")
                     }
                 }
             ];
