@@ -102,6 +102,7 @@ public class WeatherForecastController : ControllerBase
     /// </remarks>
     /// <param name="city">The city</param>
     /// <param name="captionSets">An optional list of captionsy</param>
+    /// <param name="forms"></param>
     [HttpPost]
     //[BaseCustomAuthorization(Privileges.PostWeather)]
     [Route("{city}")]
@@ -110,7 +111,7 @@ public class WeatherForecastController : ControllerBase
     [ApiInternalErrorCodes(409001)]
     [EnableCors("Cloud Flare")]
     //[HiddenApi]
-    public async Task<IActionResult> CreateWeatherByCity([FromRoute] string city, [FromBody, /*RequiredField*//*, AllowedMaxLength(10)*/] IEnumerable<CaptionSet>? captionSets = null/*, [FromForm] IEnumerable<IFormFile>? forms*/)
+    public async Task<IActionResult> CreateWeatherByCity([FromRoute] string city, [FromQuery, AllowedMaxLength(10)] IEnumerable<int>? someFilters = null, [FromBody, RequiredField] TestKVP? testKVP = null/*, [FromBody, AllowedMaxLength(10)] IEnumerable<CaptionSet>? captionSets = null*//*, [FromForm] IEnumerable<IFormFile>? forms = null*/)
     {
         _cities.Contains(city, StringComparer.OrdinalIgnoreCase).ThrowCustomExceptionIfTrue(System.Net.HttpStatusCode.Conflict, 409001, city);
 

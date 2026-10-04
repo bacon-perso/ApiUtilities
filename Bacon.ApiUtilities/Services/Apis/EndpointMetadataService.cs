@@ -65,40 +65,29 @@ internal sealed class EndpointMetadataService(IModelMetadataProvider modelMetada
 
         #region Get response code from validation attributes and get schemas
 
-        HashSet<Type> schemaTypes = [];
+        Dictionary<Type, string> schemas = [];
         HashSet<Type> validatorTypes = [];
-        HashSet<Type> expandedForSchemas = [];
-        HashSet<Type> expandedForValidators = [];
 
         foreach (ApiParameterDescription apiParameterDescription in apiDescription.ParameterDescriptions)
         {
-            if (apiParameterDescription.ModelMetadata == null)
+            if (apiParameterDescription.ModelMetadata is null)
             {
                 continue;
             }
 
-            BindingSource bindingSource = apiParameterDescription.Source;
-
-            if (bindingSource == BindingSource.Body || bindingSource == BindingSource.Form || bindingSource == BindingSource.FormFile)
-            {
-                IterateModelSchema(apiParameterDescription.ModelMetadata, true, schemaTypes, validatorTypes, expandedForSchemas, expandedForValidators);
-            }
-            else if (bindingSource == BindingSource.Path || bindingSource == BindingSource.Query)
-            {
-                AddValidatorTypes(apiParameterDescription.ModelMetadata.ValidatorMetadata, validatorTypes);
-                AddPathAndQuerySchemaType(apiParameterDescription.ModelMetadata, schemaTypes);
-            }
+            IterateModel(apiParameterDescription.ModelMetadata, schemas, validatorTypes);
         }
 
-        // Schema for response types. Validators on a response never produce an error code, so they are not collected
         foreach (ApiResponseType apiResponseType in apiDescription.SupportedResponseTypes)
         {
             ModelMetadata? responseMetadata = GetResponseModelMetadata(apiResponseType);
 
-            if (responseMetadata != null)
+            if (responseMetadata is null)
             {
-                IterateModelSchema(responseMetadata, false, schemaTypes, validatorTypes, expandedForSchemas, expandedForValidators);
+                continue;
             }
+
+            IterateModel(responseMetadata, schemas, validatorTypes);
         }
 
         AddValidatorResponseCodes(validatorTypes, modelStateValidationOptions, responseCodes);
@@ -111,7 +100,7 @@ internal sealed class EndpointMetadataService(IModelMetadataProvider modelMetada
             Verb = verb,
             Route = relativePath,
             ResponseCodes = [.. responseCodes.Order()],
-            Schemas = schemaTypes,
+            Schemas = schemas,
             IsSkipped = false,
             Metadata = GetMetadata(controllerActionDescriptor, endpointMetadataCollection)
         };
@@ -147,80 +136,72 @@ internal sealed class EndpointMetadataService(IModelMetadataProvider modelMetada
 
     #region Model walk (validation attributes and schemas)
 
-    /// <summary>
-    /// Iterate the model and collects the schema types to document and the types of the validation attributes found.
-    /// Each type is expanded only once, so self-referencing types (Node.Children is a List of Node) avoid infinite recursion.
-    /// </summary>
-    private static void IterateModelSchema(ModelMetadata root, bool collectValidators, HashSet<Type> schemaTypes, HashSet<Type> validatorTypes, HashSet<Type> expandedForSchemas, HashSet<Type> expandedForValidators)
+    private static void IterateModel(ModelMetadata root, Dictionary<Type, string> schemaIds, HashSet<Type> validatorTypes)
     {
-        HashSet<Type> expandedTypes = collectValidators ? expandedForValidators : expandedForSchemas;
         Stack<ModelMetadata> pending = new();
+        HashSet<Type> expandedTypes = [];
 
         pending.Push(root);
 
-        while (pending.Count > 0)
+        while (pending.TryPop(out ModelMetadata? current))
         {
-            ModelMetadata current = pending.Pop();
+            CollectValidators(current, validatorTypes);
 
-            // The validators of the node itself, including the ones on a collection property, are collected before unwrapping the collection
-            if (collectValidators)
+            // A collection is documented through its element type. Nested collections (List of List of T) come back through this branch
+            if (current.ElementMetadata is not null)
             {
-                AddValidatorTypes(current.ValidatorMetadata, validatorTypes);
+                pending.Push(current.ElementMetadata);
+                continue;
             }
 
-            ModelMetadata node = UnwrapCollections(current, collectValidators ? validatorTypes : null);
+            // A dictionary is documented inline by the framework (additionalProperties): the pair has no schema, only its value can
+            if (IsKeyValuePair(current.ModelType))
+            {
+                PushProperties(current, pending);
+                continue;
+            }
 
-            if (!TryGetSchemaType(node, out Type? schemaType))
+            if (!TryGetSchemaType(current, out Type? schemaType))
             {
                 continue;
             }
 
-            schemaTypes.Add(schemaType);
+            schemaIds.TryAdd(schemaType, GetSchemaId(schemaType));
 
-            if (!expandedTypes.Add(schemaType))
+            if (expandedTypes.Add(schemaType))
             {
-                continue;
-            }
-
-            if (collectValidators)
-            {
-                expandedForSchemas.Add(schemaType);
-            }
-
-            foreach (ModelMetadata property in node.Properties)
-            {
-                pending.Push(property);
+                PushProperties(current, pending);
             }
         }
     }
 
-    /// <summary>
-    /// A collection is documented through its element type. Follows nested collections (List of List of T) down to T.
-    /// When validatorTypes is given, the validators of every element level (class level attributes of the element type) are collected on the way
-    /// </summary>
-    private static ModelMetadata UnwrapCollections(ModelMetadata modelMetadata, HashSet<Type>? validatorTypes)
+    private static void CollectValidators(ModelMetadata modelMetadata, HashSet<Type> validatorTypes)
     {
-        ModelMetadata node = modelMetadata;
-
-        while (node.ElementMetadata != null)
+        foreach (object validator in modelMetadata.ValidatorMetadata)
         {
-            node = node.ElementMetadata;
-
-            if (validatorTypes != null)
-            {
-                AddValidatorTypes(node.ValidatorMetadata, validatorTypes);
-            }
+            validatorTypes.Add(validator.GetType());
         }
+    }
 
-        return node;
+    private static void PushProperties(ModelMetadata modelMetadata, Stack<ModelMetadata> pending)
+    {
+        foreach (ModelMetadata property in modelMetadata.Properties)
+        {
+            pending.Push(property);
+        }
+    }
+
+    private static bool IsKeyValuePair(Type type)
+    {
+        return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>);
     }
 
     /// <summary>
     /// Enums and complex types get a schema. Simple types (string, numbers, dates, Guid...), object and non generic structs do not
     /// </summary>
-    private static bool TryGetSchemaType(ModelMetadata node, [NotNullWhen(true)] out Type? schemaType)
+    private static bool TryGetSchemaType(ModelMetadata modelMetadata, [NotNullWhen(true)] out Type? schemaType)
     {
-        Type type = Nullable.GetUnderlyingType(node.ModelType) ?? node.ModelType;
+        Type type = Nullable.GetUnderlyingType(modelMetadata.ModelType) ?? modelMetadata.ModelType;
 
         schemaType = null;
 
@@ -230,13 +211,28 @@ internal sealed class EndpointMetadataService(IModelMetadataProvider modelMetada
             return true;
         }
 
-        if (!node.IsComplexType || type == typeof(object) || (type.IsValueType && !type.IsGenericType))
+        if (!modelMetadata.IsComplexType || type == typeof(object) || (type.IsValueType && !type.IsGenericType))
         {
             return false;
         }
 
         schemaType = type;
         return true;
+    }
+
+    /// <summary>
+    /// Mirrors the default schema reference id of the framework: ListReturnData of WeatherForecast becomes ListReturnDataOfWeatherForecast
+    /// </summary>
+    private static string GetSchemaId(Type type)
+    {
+        if (!type.IsGenericType)
+        {
+            return type.Name;
+        }
+
+        string name = type.Name[..type.Name.IndexOf('`', StringComparison.Ordinal)];
+
+        return $"{name}Of{string.Join("And", type.GetGenericArguments().Select(GetSchemaId))}";
     }
 
     private ModelMetadata? GetResponseModelMetadata(ApiResponseType apiResponseType)
@@ -252,22 +248,6 @@ internal sealed class EndpointMetadataService(IModelMetadataProvider modelMetada
         }
 
         return modelMetadataProvider.GetMetadataForType(apiResponseType.Type);
-    }
-
-    private static void AddPathAndQuerySchemaType(ModelMetadata modelMetadata, HashSet<Type> schemaTypes)
-    {
-        if (TryGetSchemaType(UnwrapCollections(modelMetadata, null), out Type? schemaType))
-        {
-            schemaTypes.Add(schemaType);
-        }
-    }
-
-    private static void AddValidatorTypes(IReadOnlyList<object> validators, HashSet<Type> validatorTypes)
-    {
-        foreach (object validator in validators)
-        {
-            validatorTypes.Add(validator.GetType());
-        }
     }
 
     private static void AddValidatorResponseCodes(IEnumerable<Type> validatorTypes, ModelStateValidationOptions modelStateValidationOptions, HashSet<long> responseCodes)

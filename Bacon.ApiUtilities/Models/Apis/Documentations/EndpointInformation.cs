@@ -10,7 +10,7 @@ internal sealed class EndpointInformation
 
     public required IReadOnlyList<long> ResponseCodes { get; init; }
 
-    public required HashSet<Type> Schemas { get; init; }
+    public required Dictionary<Type, string> Schemas { get; init; }
 
     public required EndpointMetadata Metadata { get; init; }
 

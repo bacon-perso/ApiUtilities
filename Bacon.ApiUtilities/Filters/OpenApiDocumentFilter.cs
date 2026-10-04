@@ -262,7 +262,7 @@ internal sealed partial class OpenApiDocumentFilter(string documentName) : IOpen
         {
             openApiOperation.Extensions["x-ratelimit"] = new JsonNodeExtension(new JsonObject()
             {
-                ["time-in-milliseconds"] = endpointInformation.Metadata.RateLimit,
+                ["time-in-milliseconds"] = (long)endpointInformation.Metadata.RateLimit,
             });
         }
 
@@ -277,25 +277,14 @@ internal sealed partial class OpenApiDocumentFilter(string documentName) : IOpen
     {
         openApiDocument.Components!.Schemas!.TryAdd(nameof(ErrorResult), errorSchema);
 
-        IEnumerable<Type> schemas = endpointInformations.SelectMany(sm => sm.Schemas).Distinct();
+        IEnumerable<KeyValuePair<Type, string>> schemas = [.. endpointInformations.SelectMany(sm => sm.Schemas).Distinct()];
 
-        foreach (Type type in schemas)
+        foreach (KeyValuePair<Type, string> keyValuePair in schemas)
         {
-            OpenApiSchema openApiSchema = await openApiDocumentTransformerContext.GetOrCreateSchemaAsync(type, cancellationToken: cancellationToken);
+            OpenApiSchema openApiSchema = await openApiDocumentTransformerContext.GetOrCreateSchemaAsync(keyValuePair.Key, cancellationToken: cancellationToken);
 
-            openApiDocument.Components.Schemas!.TryAdd(GetSchemaId(openApiSchema, type), openApiSchema);
+            openApiDocument.Components.Schemas!.TryAdd(keyValuePair.Value, openApiSchema);
         }
-    }
-
-    private static string GetSchemaId(OpenApiSchema openApiSchema, Type type)
-    {
-        // The framework names the schema reference after this id (for example ListReturnDataOfItemA). Type.Name would give ListReturnData`1 for every closed generic type
-        if (openApiSchema.Metadata is not null && openApiSchema.Metadata.TryGetValue("x-schema-id", out object? schemaId) && schemaId is string id)
-        {
-            return id;
-        }
-
-        return type.Name;
     }
 
     #endregion Organize Schemas

@@ -175,7 +175,7 @@ try
 
             o.OpenApiDocumentInfos = openApiDocumentInfos;
             o.OutputCacheDuration = TimeSpan.FromSeconds(0);
-            o.UiConfigs.UiType = Bacon.ApiUtilities.Models.UiTypes.Swagger;
+            o.UiConfigs.UiType = Bacon.ApiUtilities.Models.UiTypes.Scalar;
             o.UiConfigs.VirtualPath = string.Empty;
             o.UiConfigs.CorsPolicyCss = new()
             {
