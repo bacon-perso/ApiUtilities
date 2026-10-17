@@ -899,7 +899,7 @@ test
         using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Is.False);
-            Assert.That(duplicatedValues, Is.EqualTo(new string?[] { "b", null, "a" }));
+            Assert.That(duplicatedValues, Is.EqualTo(["b", null, "a"]));
         }
     }
 
@@ -913,7 +913,7 @@ test
         using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Is.False);
-            Assert.That(duplicatedValues, Is.EqualTo(new[] { 3, 1, 2 }));
+            Assert.That(duplicatedValues, Is.EqualTo([3, 1, 2]));
         }
     }
 
@@ -927,14 +927,14 @@ test
         using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Is.False);
-            Assert.That(duplicatedValues, Is.EqualTo(new[] { 7 }));
+            Assert.That(duplicatedValues, Is.EqualTo([7]));
         }
     }
 
     [TestCase()]
     public void TryValidateDuplicatedItems_NoFunc_WithEmptyCollection_ShouldBeValid()
     {
-        bool result = Validators.TryValidateDuplicatedItems(Array.Empty<int>(), out IEnumerable<int>? duplicatedValues);
+        bool result = Validators.TryValidateDuplicatedItems([], out IEnumerable<int>? duplicatedValues);
 
         using (Assert.EnterMultipleScope())
         {
@@ -995,8 +995,8 @@ test
             Assert.That(result, Is.False);
             Assert.That(enumerationsAfterCall, Is.EqualTo(1));
             Assert.That(enumerations, Is.EqualTo(1));
-            Assert.That(firstPass, Is.EqualTo(new[] { 1 }));
-            Assert.That(secondPass, Is.EqualTo(new[] { 1 }));
+            Assert.That(firstPass, Is.EqualTo([1]));
+            Assert.That(secondPass, Is.EqualTo([1]));
         }
     }
 
@@ -1009,7 +1009,7 @@ test
 
         items.AddRange([2, 2]);
 
-        Assert.That(duplicatedValues, Is.EqualTo(new[] { 1 }));
+        Assert.That(duplicatedValues, Is.EqualTo([1]));
     }
 
     #endregion No Func
@@ -1063,7 +1063,7 @@ test
         using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Is.False);
-            Assert.That(duplicatedValues, Is.EqualTo(new[] { 3, 1, 2 }));
+            Assert.That(duplicatedValues, Is.EqualTo([3, 1, 2]));
         }
     }
 
@@ -1078,7 +1078,7 @@ test
         using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Is.False);
-            Assert.That(duplicatedValues, Is.EqualTo(new[] { 10, 20 }));
+            Assert.That(duplicatedValues, Is.EqualTo([10, 20]));
         }
     }
 
@@ -1099,7 +1099,7 @@ test
         using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Is.False);
-            Assert.That(duplicatedValues, Is.EqualTo(new[] { 3 }));
+            Assert.That(duplicatedValues, Is.EqualTo([3]));
         }
     }
 
@@ -1140,8 +1140,8 @@ test
             Assert.That(result, Is.False);
             Assert.That(enumerationsAfterCall, Is.EqualTo(1));
             Assert.That(enumerations, Is.EqualTo(1));
-            Assert.That(firstPass, Is.EqualTo(new[] { 1 }));
-            Assert.That(secondPass, Is.EqualTo(new[] { 1 }));
+            Assert.That(firstPass, Is.EqualTo([1]));
+            Assert.That(secondPass, Is.EqualTo([1]));
         }
     }
 
@@ -1257,7 +1257,7 @@ test
         {
             Assert.That(data, Has.Count.EqualTo(1));
             Assert.That(data.ContainsKey(1), Is.True);
-            Assert.That(data[1], Is.EqualTo(new[] { 2, 3 }));
+            Assert.That(data[1], Is.EqualTo([2, 3]));
         }
     }
 
@@ -1278,8 +1278,8 @@ test
         using (Assert.EnterMultipleScope())
         {
             Assert.That(data, Has.Count.EqualTo(2));
-            Assert.That(data[10], Is.EqualTo(new[] { 5 }));
-            Assert.That(data[20], Is.EqualTo(new[] { 10 }));
+            Assert.That(data[10], Is.EqualTo([5]));
+            Assert.That(data[20], Is.EqualTo([10]));
             Assert.That(data.ContainsKey(30), Is.False);
         }
     }

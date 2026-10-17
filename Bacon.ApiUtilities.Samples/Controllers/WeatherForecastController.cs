@@ -101,8 +101,10 @@ public class WeatherForecastController : ControllerBase
     /// Create weather by city
     /// </remarks>
     /// <param name="city">The city</param>
-    /// <param name="captionSets">An optional list of captionsy</param>
-    /// <param name="forms"></param>
+    /// <param name="someFilters">Some filters</param>
+    /// <param name="testKVP">TestKVP</param>
+    ///// <param name="captionSets">An optional list of captionsy</param>
+    ///// <param name="forms"></param>
     [HttpPost]
     //[BaseCustomAuthorization(Privileges.PostWeather)]
     [Route("{city}")]

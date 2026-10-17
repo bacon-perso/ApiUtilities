@@ -136,7 +136,7 @@ public static class OpenApiDocumentationExtensions
         OpenApiDocumentationOptions openApiDocumentationOptions = webApplication.Services.GetRequiredService<IOptions<OpenApiDocumentationOptions>>().Value;
 
         //Everything registered after this call (authentication, authorization, rate limiter, controllers...) is skipped when the requested resource is the documentation
-        webApplication.Use(async (HttpContext httpContext, RequestDelegate next) =>
+        webApplication.Use(async (httpContext, next) =>
         {
             Endpoint? endpoint = httpContext.GetEndpoint();
 
