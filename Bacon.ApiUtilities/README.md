@@ -61,7 +61,7 @@ app.UseOutputCache();          // needed when OutputCacheDuration is above zero;
 app.UseApiExceptionHandler();  // turns CustomException and unhandled exceptions into an ErrorResult. Keep it before UseStatusCodePages
 app.UseStatusCodePages();      // fills in the body (through ProblemDetails) of framework errors that are not exceptions, such as an unknown route
 
-app.UseOpenApiDocumentation();
+app.UseOpenApiDocumentation(); // after UseRouting and the middleware to keep for the documentation; documentation requests end here, so everything below is skipped for them
 
 app.UseAuthentication();       // before UseRateLimiter so the caller's identity is known
 app.UseAuthorization();
@@ -94,6 +94,7 @@ The order that matters:
 3. `UseRouting()` before `UseRateLimiter()`.
 4. `UseAuthentication()` and `UseAuthorization()` before `UseRateLimiter()`.
 5. `UseApiExceptionHandler()` before `UseStatusCodePages()`, and early in the pipeline. It only handles **thrown exceptions**, so it must wrap the middleware and endpoints that can throw. This is the order used by the Samples.
+6. `UseOpenApiDocumentation()` after `UseRouting()`, and before the middleware that the documentation does not need (`UseAuthentication()`, `UseAuthorization()`, `UseRateLimiter()`, the endpoints). A request for an OpenAPI document or for the Scalar UI is executed by `UseOpenApiDocumentation()` and the pipeline stops there. It identifies those requests from the endpoint selected by routing, so before `UseRouting()` nothing is skipped, without any error. The middleware placed **before** `UseOpenApiDocumentation()` (`UseOutputCache()`, `UseRequestLocalization()`, `UseApiExceptionHandler()`...) still runs and still wraps the response, so the output cache keeps working. Middleware placed before `UseRouting()` also runs for these requests, so keep it to what is cheap (HTTPS redirection, static files...). The Swagger UI is served by its own middleware, which already ends the pipeline for its requests.
 
 The position of `UseApiExceptionHandler()` relative to `UseRateLimiter()` does not matter for rate limiting: the rate limiter writes the 429 `ErrorResult` itself. Place `UseApiExceptionHandler()` early anyway, so that it also wraps the rest of the pipeline for thrown exceptions.
 
@@ -264,6 +265,8 @@ The `TResource` type passed to `AddApiExceptionHandler<TResource>` is just the m
 ```csharp
 app.UseOpenApiDocumentation(); // serves the documents and the configured UI
 ```
+
+Requests for the documents and the UI do not go any further in the pipeline: authentication, authorization, rate limiting and the endpoints are skipped for them. See item 6 of [Required middleware and ordering](#required-middleware-and-ordering) for where to place it.
 
 The UI options (`UiConfigs`) are part of `AddOpenApiDocumentation` and are validated at startup together with the rest of the options.
 

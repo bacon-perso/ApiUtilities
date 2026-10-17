@@ -8,6 +8,7 @@ using Bacon.ApiUtilities.Services.Apis;
 using Bacon.ApiUtilities.Services.Apis.UI;
 using Bacon.ApiUtilities.Services.Apis.Validators;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.DependencyInjection;
@@ -134,7 +135,24 @@ public static class OpenApiDocumentationExtensions
     {
         OpenApiDocumentationOptions openApiDocumentationOptions = webApplication.Services.GetRequiredService<IOptions<OpenApiDocumentationOptions>>().Value;
 
-        webApplication.MapOpenApi().CacheOutput(_openApiDocumentOutputCacheKey);
+        //Everything registered after this call (authentication, authorization, rate limiter, controllers...) is skipped when the requested resource is the documentation
+        webApplication.Use(async (HttpContext httpContext, RequestDelegate next) =>
+        {
+            Endpoint? endpoint = httpContext.GetEndpoint();
+
+            if (endpoint?.RequestDelegate is not null && endpoint.Metadata.GetMetadata<OpenApiDocumentationEndpointMarker>() is not null)
+            {
+                await endpoint.RequestDelegate(httpContext);
+
+                return;
+            }
+
+            await next(httpContext);
+        });
+
+        webApplication.MapOpenApi()
+            .CacheOutput(_openApiDocumentOutputCacheKey)
+            .WithMetadata(new OpenApiDocumentationEndpointMarker());
 
         IUiService uiService = webApplication.Services.GetRequiredKeyedService<IUiService>(openApiDocumentationOptions.UiConfigs.UiType);
 

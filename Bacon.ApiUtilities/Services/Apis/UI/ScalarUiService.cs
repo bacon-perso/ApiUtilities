@@ -31,6 +31,6 @@ internal sealed class ScalarUiService(IOptions<OpenApiDocumentationOptions> conf
             {
                 o.AddDocument(openApiDocumentInfo.Name, openApiDocumentInfo.Title);
             }
-        });
+        }).WithMetadata(new OpenApiDocumentationEndpointMarker());
     }
 }
