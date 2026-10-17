@@ -7,9 +7,9 @@ using System.ComponentModel.DataAnnotations;
 namespace Bacon.ApiUtilities.Attributes.Validations;
 
 /// <summary>
-/// Checks if the Guid value is empty
+/// Validates that the Guid or collection of Guid are not Guid.Empty
 /// </summary>
-public sealed class EmptyGuidAttribute : ValidationAttribute
+public sealed class NotEmptyGuidAttribute : ValidationAttribute
 {
     /// <summary>
     /// Check if the validation of the value passed or not
@@ -44,7 +44,7 @@ public sealed class EmptyGuidAttribute : ValidationAttribute
             if (guid.Value == Guid.Empty)
             {
                 IModelValidationService modelStateValidation = validationContext.GetRequiredService<IModelValidationService>();
-                return modelStateValidation.CreateInvalidModelValidationResult(validationContext, ValidationAttributeTypes.EmptyGuidAttribute);
+                return modelStateValidation.CreateInvalidModelValidationResult(validationContext, ValidationAttributeTypes.NotEmptyGuidAttribute);
             }
         }
 

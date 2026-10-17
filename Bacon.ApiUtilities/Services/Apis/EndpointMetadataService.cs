@@ -75,7 +75,7 @@ internal sealed class EndpointMetadataService(IModelMetadataProvider modelMetada
                 continue;
             }
 
-            IterateModel(apiParameterDescription.ModelMetadata, schemas, validatorTypes);
+            IterateModel(apiParameterDescription.ModelMetadata, schemas, validatorTypes, true);
         }
 
         foreach (ApiResponseType apiResponseType in apiDescription.SupportedResponseTypes)
@@ -87,7 +87,7 @@ internal sealed class EndpointMetadataService(IModelMetadataProvider modelMetada
                 continue;
             }
 
-            IterateModel(responseMetadata, schemas, validatorTypes);
+            IterateModel(responseMetadata, schemas, validatorTypes, false);
         }
 
         AddValidatorResponseCodes(validatorTypes, modelStateValidationOptions, responseCodes);
@@ -136,7 +136,7 @@ internal sealed class EndpointMetadataService(IModelMetadataProvider modelMetada
 
     #region Model walk (validation attributes and schemas)
 
-    private static void IterateModel(ModelMetadata root, Dictionary<Type, string> schemaIds, HashSet<Type> validatorTypes)
+    private static void IterateModel(ModelMetadata root, Dictionary<Type, string> schemaIds, HashSet<Type> validatorTypes, bool collectValidators)
     {
         Stack<ModelMetadata> pending = new();
         HashSet<Type> expandedTypes = [];
@@ -145,7 +145,10 @@ internal sealed class EndpointMetadataService(IModelMetadataProvider modelMetada
 
         while (pending.TryPop(out ModelMetadata? current))
         {
-            CollectValidators(current, validatorTypes);
+            if (collectValidators)
+            {
+                CollectValidators(current, validatorTypes);
+            }
 
             // A collection is documented through its element type. Nested collections (List of List of T) come back through this branch
             if (current.ElementMetadata is not null)

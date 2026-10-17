@@ -181,7 +181,7 @@ Under `Bacon.ApiUtilities.Attributes.Validations`, each mapped in `AddApiExcepti
 | `AllowedRangeAttribute` | Numeric range |
 | `DuplicatedItemsAttribute` | Collection has no duplicate items |
 | `RequiredEnumerableContentAttribute` | Collection is null or contains no null items |
-| `EmptyGuidAttribute` | `Guid`/`Guid?`/collections thereof are not `Guid.Empty` |
+| `NotEmptyGuidAttribute` | `Guid`/`Guid?`/collections thereof are not `Guid.Empty` |
 | `EmailFormatAttribute` | Email format, checked as received with no trimming (delegates to `Bacon.Utilities.Validators.ValidateEmail`) |
 | `PhoneNumberFormatAttribute` | Valid phone number (via `libphonenumber-csharp`) |
 | `UrlFormatAttribute(UriKind, maxUriLength = 2000)` | Valid absolute/relative URI (`maxUriLength` cannot exceed 4000) |

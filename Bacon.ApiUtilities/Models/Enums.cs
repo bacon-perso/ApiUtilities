@@ -55,7 +55,7 @@ public enum ValidationAttributeTypes
     /// <summary>
     /// No empty guid attribute
     /// </summary>
-    EmptyGuidAttribute,
+    NotEmptyGuidAttribute,
 
     /// <summary>
     /// Phone number format attribute

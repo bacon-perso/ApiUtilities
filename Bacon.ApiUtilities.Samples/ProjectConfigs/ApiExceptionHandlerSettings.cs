@@ -21,7 +21,7 @@ public class ApiExceptionHandlerSettings
             { ValidationAttributeTypes.AllowedRangeAttribute, 412003 },
             { ValidationAttributeTypes.DuplicatedItemsAttribute, 412004 },
             { ValidationAttributeTypes.EmailFormatAttribute, 412005 },
-            { ValidationAttributeTypes.EmptyGuidAttribute, 412006 },
+            { ValidationAttributeTypes.NotEmptyGuidAttribute, 412006 },
             { ValidationAttributeTypes.RequiredEnumerableContentAttribute, 412007 },
             { ValidationAttributeTypes.RequiredFieldAttribute, 412008 },
             { ValidationAttributeTypes.UtcDateTimeFormatAttribute, 412009 }

@@ -70,7 +70,7 @@ internal sealed class EndpointMetadataServiceTests
 
         Assert.That(
             endpointInformation.ResponseCodes,
-            Is.SupersetOf(new[] { RootPropertyCode, MiddlePropertyCode, LeafPropertyCode, RootClassCode, MiddleClassCode, LeafClassCode }));
+            Is.SupersetOf([RootPropertyCode, MiddlePropertyCode, LeafPropertyCode, RootClassCode, MiddleClassCode, LeafClassCode]));
     }
 
     [Test]
@@ -80,7 +80,7 @@ internal sealed class EndpointMetadataServiceTests
 
         Assert.That(
             endpointInformation.ResponseCodes,
-            Is.SupersetOf(new[] { PathCode, QueryCode, RootPropertyCode, MiddlePropertyCode, LeafPropertyCode, RootClassCode, MiddleClassCode, LeafClassCode }));
+            Is.SupersetOf([PathCode, QueryCode, RootPropertyCode, MiddlePropertyCode, LeafPropertyCode, RootClassCode, MiddleClassCode, LeafClassCode]));
     }
 
     [Test]
@@ -88,7 +88,7 @@ internal sealed class EndpointMetadataServiceTests
     {
         EndpointInformation endpointInformation = GetEndpointInformation(nameof(NestedValidationTestController.Form));
 
-        Assert.That(endpointInformation.ResponseCodes, Is.SupersetOf(new[] { FormPropertyCode, FormItemPropertyCode }));
+        Assert.That(endpointInformation.ResponseCodes, Is.SupersetOf([FormPropertyCode, FormItemPropertyCode]));
     }
 
     [Test]
@@ -106,12 +106,12 @@ internal sealed class EndpointMetadataServiceTests
 
         EndpointInformation endpointInformation = GetEndpointInformation(apiDescription);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(endpointInformation.IsSkipped, Is.True);
             Assert.That(endpointInformation.Verb, Is.EqualTo("GET"));
             Assert.That(endpointInformation.Route, Is.EqualTo("/minimal/unnamed"));
-        });
+        }
     }
 
     [Test]
@@ -119,11 +119,11 @@ internal sealed class EndpointMetadataServiceTests
     {
         EndpointInformation endpointInformation = GetEndpointInformation(GetApiDescriptions().Single(s => s.ActionDescriptor.RouteValues["controller"] == "TaggedTest"));
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(endpointInformation.IsSkipped, Is.False);
             Assert.That(endpointInformation.Metadata.Tag, Is.EqualTo("CustomTag"));
-        });
+        }
     }
 
     [Test]
@@ -131,12 +131,12 @@ internal sealed class EndpointMetadataServiceTests
     {
         EndpointInformation endpointInformation = GetEndpointInformation(nameof(NestedValidationTestController.Shared));
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(endpointInformation.Schemas, Is.SupersetOf(new[] { typeof(NestedRoot), typeof(NestedMiddle), typeof(NestedLeaf) }));
-            Assert.That(endpointInformation.ResponseCodes, Is.SupersetOf(new[] { MiddlePropertyCode, LeafPropertyCode, MiddleClassCode, LeafClassCode }));
+            Assert.That(endpointInformation.Schemas.Keys, Is.SupersetOf([typeof(NestedRoot), typeof(NestedMiddle), typeof(NestedLeaf)]));
+            Assert.That(endpointInformation.ResponseCodes, Is.SupersetOf([MiddlePropertyCode, LeafPropertyCode, MiddleClassCode, LeafClassCode]));
             Assert.That(endpointInformation.ResponseCodes, Does.Not.Contain(RootPropertyCode).And.Not.Contain(RootClassCode));
-        });
+        }
     }
 
     [Test]
@@ -144,7 +144,7 @@ internal sealed class EndpointMetadataServiceTests
     {
         EndpointInformation endpointInformation = GetEndpointInformation(nameof(NestedValidationTestController.Body));
 
-        Assert.That(endpointInformation.Schemas, Is.SupersetOf(new[] { typeof(NestedRoot), typeof(NestedMiddle), typeof(NestedLeaf) }));
+        Assert.That(endpointInformation.Schemas.Keys, Is.SupersetOf([typeof(NestedRoot), typeof(NestedMiddle), typeof(NestedLeaf)]));
     }
 
     private IEnumerable<ApiDescription> GetApiDescriptions()
